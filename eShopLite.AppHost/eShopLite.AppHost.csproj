@@ -12,11 +12,8 @@
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="8.2.1" />
     <PackageReference Include="Aspire.Hosting.Azure.Sql" Version="8.2.1" />
-    <PackageReference Include="Aspire.Hosting.Redis" Version="8.2.1" />
     <PackageReference Include="Aspire.Hosting.SqlServer" Version="8.2.1" />
-    <PackageReference Include="Aspire.Microsoft.Data.SqlClient" Version="8.2.1" />
     <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="8.2.1" />
-    <PackageReference Include="Aspire.StackExchange.Redis" Version="8.2.1" />
   </ItemGroup>
 
   <ItemGroup>

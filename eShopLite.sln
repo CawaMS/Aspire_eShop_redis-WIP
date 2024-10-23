@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLite.AppHost", "eShopL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLite.ServiceDefaults", "eShopLite.ServiceDefaults\eShopLite.ServiceDefaults.csproj", "{6795B001-46B7-4747-A1F9-CA56751222B3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestData", "TestData\TestData.csproj", "{725B03DE-49A5-4BEF-B8AA-F2D33A23A875}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestData", "TestData\TestData.csproj", "{725B03DE-49A5-4BEF-B8AA-F2D33A23A875}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
