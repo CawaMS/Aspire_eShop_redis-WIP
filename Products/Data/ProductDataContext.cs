@@ -21,8 +21,8 @@ public static class Extensions
 
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<ProductDataContext>();
-        context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
+        //context.Database.Migrate();
         DbInitializer.Initialize(context);
     }
 }
@@ -33,9 +33,7 @@ public static class DbInitializer
     public static void Initialize(ProductDataContext context)
     {
         if (context.Product.Any())
-        { 
-            context.Database.EnsureDeleted();
-        }
+            return;
 
         var products = new List<Product>
         {
