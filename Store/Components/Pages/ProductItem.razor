@@ -1,0 +1,120 @@
+﻿@page "/product/{productId:int}"
+@using DataEntities
+@using Store.Services
+@inject ProductService ProductService
+@inject ICartService CartService
+@inject NavigationManager Nav
+@inject IHttpContextAccessor HttpContextAccessor
+
+<h3>ProductItem</h3>
+
+@if (product is not null)
+{
+    <PageTitle>@product.Name</PageTitle>
+
+    <div class="item-details">
+        <img alt="@product.Name" src="images/@product.ImageUrl" />
+        <div class="description">
+            <p>@product.Description</p>
+            <p>
+                Category: <strong>@product.Category</strong>
+            </p>
+            <form class="add-to-cart" method="post" @formname="add-to-cart" @onsubmit="@AddToCartAsync" data-enhance="@isLoggedIn">
+                <AntiforgeryToken />
+                <span class="price">$@product.Price.ToString("0.00")</span>
+
+                @if (isLoggedIn)
+                {
+                    <button type="submit" title="Add to basket">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path id="Vector" d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path id="Vector_2" d="M3 6H21" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path id="Vector_3" d="M16 10C16 11.0609 15.5786 12.0783 14.8284 12.8284C14.0783 13.5786 13.0609 14 12 14C10.9391 14 9.92172 13.5786 9.17157 12.8284C8.42143 12.0783 8 11.0609 8 10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Add to shopping bag
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" title="Log in to purchase">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Log in to purchase
+                    </button>
+                }
+            </form>
+
+            <p><strong>@numInCart</strong> in <a href="cart">shopping bag</a></p>
+        </div>
+    </div>
+    
+}
+else if (notFound)
+{
+    <h1>Not found</h1>
+    <div class="item-details">
+        <p>Sorry, we couldn't find any such product.</p>
+    </div>
+}
+
+
+@code {
+    private Product? product;
+    private bool notFound = false;
+    private bool isLoggedIn;
+    private int numInCart;
+
+    [Parameter]
+    public int productId { get; set; }
+
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            HttpContext = HttpContextAccessor.HttpContext;
+            isLoggedIn = HttpContext?.User.Identity?.IsAuthenticated == true;
+            product = await ProductService.GetProductById(productId);
+            await UpdateNumInCartAsync();
+        }catch (Exception ex)
+        {
+            HttpContext!.Response.StatusCode = 404;
+            notFound = true;
+        }
+    }
+
+    private async Task AddToCartAsync()
+    {
+        if (!isLoggedIn)
+        {
+            Nav.NavigateTo("Account/Login");
+            return;
+        }
+
+        if (product is not null)
+        {
+            if (HttpContext?.User.Identity?.Name != null)
+            {
+                await CartService.AddItem(HttpContext.User.Identity.Name, product.Id,product.Price,1);
+                await UpdateNumInCartAsync();
+            }
+            else
+            {
+                Nav.NavigateTo("Account/Login");
+                return;
+            }
+        }
+    }
+
+    private async Task UpdateNumInCartAsync()
+    {
+        var items = await CartService.GetCartItems(HttpContext!.User.Identity!.Name).ToListAsync();
+        numInCart = items.FirstOrDefault(row => row.ItemId == productId)?.Quantity ?? 0;
+    }
+
+    
+}

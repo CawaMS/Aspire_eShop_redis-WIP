@@ -1,0 +1,68 @@
+﻿@page "/"
+@using DataEntities
+@using Store.Services
+@inject ProductService ProductService
+@inject IConfiguration Configuration
+@attribute [StreamRendering(true)]
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+
+<p>Here are some of our amazing outdoor products that you can purchase.</p>
+
+<div class="product">
+    <!--<CatalogSearch BrandId="@BrandId" ItemTypeId="@ItemTypeId" />-->
+    @if (products is null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+
+        for (int i = 0; i < 5; i++)
+        {
+            <div class="product-row">
+                @for (int j = i; j < products.Count; j+=5)
+                {
+                    <ProductListItem product="@products[j]" />
+                }
+            </div>
+        }
+        @*         for (int i = 0; i < products.Count; i += 5)
+        {
+            <div class="product-row">
+                @for (int j = i; j < i + 5 && j < products.Count; j++)
+                {
+                    <ProductListItem product="@products[j]" />
+                }
+            </div>
+        } *@
+
+@*           @foreach (var product in products)
+          {
+
+             <ProductListItem product="@product" />
+
+          } *@
+        
+    }
+</div>
+
+@code {
+    private List<Product>? products;
+
+    //private int productsPerRow;
+    //private int productCount;
+    //private int rowCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        products = await ProductService.GetProducts();
+        //productsPerRow = 3;
+        //productCount = products.Count;
+        //rowCount = (int)Math.Ceiling((double)productCount / productsPerRow);
+    }
+
+}
