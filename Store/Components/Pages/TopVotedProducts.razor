@@ -1,9 +1,73 @@
 ﻿@page "/topvotedproducts"
+@using DataEntities
+@using Store.Services
+@inject ProductService ProductService
+@inject IConfiguration Configuration
+@attribute [StreamRendering(true)]
 
-<button type="submit">
-    Like
-</button>
+<PageTitle>Top voted products</PageTitle>
+
+<h1>Products</h1>
+
+<p>Here are the top voted products</p>
+
+<div class="product">
+    @if (products is null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {   
+            <div>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                @for (int i = 0; i < products.Count; i++)
+                {
+                    <tr>
+                        <td class="card" style="width:50%">
+                            <img src="images/@products[i].ImageUrl" alt="@products[i].Name" style="width:100%">
+                            <div class="container">
+                                <table>
+                                    <tr>
+                                        <td align="left">
+                                            <b>@products[i].Name</b>
+                                        </td>
+                                        <td align="right">
+                                            <img src="icons/thumbup.jpg" style="width:20%" />
+                                        </td>
+                                    </tr>
+                                </table>                                                                                                      
+                            </div>
+                        </td>
+                        <td align="left">
+                            <div>
+                                <h1>
+                                    500
+                                </h1>
+                                <h4>
+                                    customers liked @products[i].Name
+                                </h4>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </table>
+
+            </div>
+    }
+</div>
 
 @code {
+    private List<Product>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        products = await ProductService.GetProducts();
+    }
 
 }
+
