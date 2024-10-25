@@ -22,7 +22,6 @@ public static class Extensions
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<ProductDataContext>();
         context.Database.EnsureCreated();
-        context.Database.Migrate();
         DbInitializer.Initialize(context);
     }
 }
