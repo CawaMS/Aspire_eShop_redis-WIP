@@ -7,16 +7,28 @@
         <span class='catalog-product-image'>
             <img alt="@product.Name" src='images/@product.ImageUrl' />
         </span>
+    </a>
+        <form method="post" data-enhance>
         <span class='catalog-product-content'>
             <span class='name'>@product.Name</span>
             <span class='price'>$@product.Price.ToString("0.00")</span>
+                <input type="hidden" name="_handler" value="vote-product" />
+                <img src="icons/thumbup.jpg" style="width:20%" name="VotedProductId" value=@product.Id />            
         </span>
-    </a>
+        </form>
+    
 </div>
+
+<form @formname="vote-product" @onsubmit="@VoteProductAsync"></form>
 
 @code {
     [Parameter, EditorRequired]
     public required Product product { get; set; }
 
     private string ProductItemURL => $"/product/{product.Id}";
+
+    private async Task VoteProductAsync()
+    {
+        //await ProductService.VoteProductAsync(VotedProductId);
+    }
 }

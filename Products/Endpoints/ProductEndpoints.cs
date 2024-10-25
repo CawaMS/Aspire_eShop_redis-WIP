@@ -1,4 +1,5 @@
 ﻿using DataEntities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
@@ -101,5 +102,28 @@ public static class ProductEndpoints
         .WithName("DeleteProduct")
         .Produces<Product>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound);
+
+        group.MapPost("/PostVote", async(ProductRanking productRanking, ProductDataContext db) =>
+        {
+            await RedisDb.SortedSetUpdateAsync("productVoteSortedSet", productRanking.product.Id, productRanking.rank);
+            return Results.Ok("Post request");
+        })
+        .WithName("PostProductVote")
+        .Produces<Product>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound);
+
+        group.MapGet("/ProductLeaderboard", async(ProductDataContext db) =>
+        { 
+            var productRanking = (await RedisDb.SortedSetRangeByRankWithScoresAsync("productVoteSortedSet", order:Order.Descending))
+                                    .Select(x => new ProductRanking
+                                    {
+                                        product = db.Product.AsNoTracking()
+                                                  .FirstOrDefault(model => model.Id == (int)x.Element),
+                                        rank = (int)x.Score
+                                    }).ToList();
+            return productRanking;
+
+        }).WithName("getProductLeaderboard")
+        .Produces<List<ProductRanking>>(StatusCodes.Status200OK); ;
     }
 }

@@ -1,5 +1,8 @@
 ﻿using DataEntities;
+using System.Numerics;
+using System.Text;
 using System.Text.Json;
+using System.Threading;
 
 namespace Store.Services;
 
@@ -71,5 +74,26 @@ public class ProductService
         }
 
         return product ?? new Product();
+    }
+
+    public async Task<ProductRanking[]> GetProductRankings()
+    {
+        List<ProductRanking>? productRanking = null;
+
+        await foreach (var pR in httpClient.GetFromJsonAsAsyncEnumerable<ProductRanking>("/api/Product/ProductLeaderboard"))
+        {
+            if (productRanking is not null)
+            {
+                productRanking ??= [];
+                productRanking.Add(pR);
+            }
+        }
+
+        return productRanking?.ToArray() ?? [];
+    }
+
+    public async Task PostProductRankingAsync(ProductRanking productRanking)
+    {
+        await httpClient.PostAsync($"/api/Product/PostVote", new StringContent(JsonSerializer.Serialize(productRanking), Encoding.UTF8, "application/json"));
     }
 }

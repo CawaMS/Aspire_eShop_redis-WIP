@@ -1,6 +1,0 @@
-@eShopLite.Carts_HostAddress = http://localhost:5080
-
-GET {{eShopLite.Carts_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

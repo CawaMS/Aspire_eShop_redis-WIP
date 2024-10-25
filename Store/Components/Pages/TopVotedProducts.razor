@@ -12,9 +12,9 @@
 <p>Here are the top voted products</p>
 
 <div class="product">
-    @if (products is null)
+    @if (productRankings is null)
     {
-        <p>Loading...</p>
+        <p>No product rankings yet</p>
     }
     else
     {   
@@ -24,31 +24,22 @@
                         <th></th>
                         <th></th>
                     </tr>
-                @for (int i = 0; i < products.Count; i++)
+                @for (int i = 0; i < productRankings.Count(); i++)
                 {
                     <tr>
                         <td class="card" style="width:50%">
-                            <img src="images/@products[i].ImageUrl" alt="@products[i].Name" style="width:100%">
-                            <div class="container">
-                                <table>
-                                    <tr>
-                                        <td align="left">
-                                            <b>@products[i].Name</b>
-                                        </td>
-                                        <td align="right">
-                                            <img src="icons/thumbup.jpg" style="width:20%" />
-                                        </td>
-                                    </tr>
-                                </table>                                                                                                      
+                            <img src="images/@productRankings[i].product.ImageUrl" alt="@productRankings[i].product.Name" style="width:100%">
+                            <div class="container" @key="@productRankings[i].product.Id">
+                                  <b>@productRankings[i].product.Name</b>                                                                                                    
                             </div>
                         </td>
                         <td align="left">
                             <div>
                                 <h1>
-                                    500
+                                    @productRankings[i].rank
                                 </h1>
                                 <h4>
-                                    customers liked @products[i].Name
+                                    customers liked @productRankings[i].product.Name
                                 </h4>
                             </div>
                         </td>
@@ -61,12 +52,12 @@
 </div>
 
 @code {
-    private List<Product>? products;
+    private ProductRanking[] productRankings;
 
     protected override async Task OnInitializedAsync()
     {
         // Simulate asynchronous loading to demonstrate streaming rendering
-        products = await ProductService.GetProducts();
+        productRankings = await ProductService.GetProductRankings();
     }
 
 }
