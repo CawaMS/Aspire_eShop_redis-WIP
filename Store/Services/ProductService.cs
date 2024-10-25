@@ -78,22 +78,25 @@ public class ProductService
 
     public async Task<ProductRanking[]> GetProductRankings()
     {
+        Console.WriteLine("Entered ProductService.cs GetProductRankings()");
         List<ProductRanking>? productRanking = null;
 
         await foreach (var pR in httpClient.GetFromJsonAsAsyncEnumerable<ProductRanking>("/api/Product/ProductLeaderboard"))
         {
-            if (productRanking is not null)
+            if (pR is not null)
             {
                 productRanking ??= [];
                 productRanking.Add(pR);
             }
         }
 
+        Console.WriteLine("Executed ProductService.cs GetProductRankings()");
         return productRanking?.ToArray() ?? [];
     }
 
-    public async Task PostProductRankingAsync(ProductRanking productRanking)
+    public async Task PostProductRankingAsync(int productId)
     {
-        await httpClient.PostAsync($"/api/Product/PostVote", new StringContent(JsonSerializer.Serialize(productRanking), Encoding.UTF8, "application/json"));
+        Console.WriteLine("Entered Product HTTPClient Service: PostProductRankingAsync");
+        await httpClient.PostAsync($"/api/Product/PostVote/?id={productId}", new StringContent(JsonSerializer.Serialize(productId), Encoding.UTF8, "application/json"));
     }
 }

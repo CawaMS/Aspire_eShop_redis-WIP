@@ -103,9 +103,10 @@ public static class ProductEndpoints
         .Produces<Product>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound);
 
-        group.MapPost("/PostVote", async(ProductRanking productRanking, ProductDataContext db) =>
+        group.MapPost("/PostVote", async([FromQuery] int Id, ProductDataContext db) =>
         {
-            await RedisDb.SortedSetUpdateAsync("productVoteSortedSet", productRanking.product.Id, productRanking.rank);
+            Console.WriteLine("Entered Product endpoints: MapPost(/PostVote)");
+            await RedisDb.SortedSetIncrementAsync("productVoteSortedSet", Id, 1);
             return Results.Ok("Post request");
         })
         .WithName("PostProductVote")
@@ -113,13 +114,13 @@ public static class ProductEndpoints
         .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("/ProductLeaderboard", async(ProductDataContext db) =>
-        { 
+        {
+            Console.WriteLine("Entered ProductEndpoints.cs /ProductLeaderboard");
             var productRanking = (await RedisDb.SortedSetRangeByRankWithScoresAsync("productVoteSortedSet", order:Order.Descending))
                                     .Select(x => new ProductRanking
                                     {
-                                        product = db.Product.AsNoTracking()
-                                                  .FirstOrDefault(model => model.Id == (int)x.Element),
-                                        rank = (int)x.Score
+                                        ProductId = (int) x.Element,
+                                        Score = (int)x.Score
                                     }).ToList();
             return productRanking;
 

@@ -8,15 +8,8 @@ using System.Threading.Tasks;
 namespace DataEntities;
 
 
-public class ProductRanking
-{
-    [JsonPropertyName("product")]
-    public Product product { get; set; }
-    [JsonPropertyName("rank")]
-    public int rank { get; set; }
-}
-
-[JsonSerializable(typeof(List<ProductRanking>))]
-public sealed partial class ProductRankingSerializerContext : JsonSerializerContext
-{
-}
+public record ProductRanking 
+{ 
+    public required int ProductId { get; set; }
+    public int Score { get; set; }
+};
