@@ -1,0 +1,77 @@
+﻿@page "/topvotedproducts"
+@using DataEntities
+@using Store.Services
+@inject ProductService ProductService
+@inject IConfiguration Configuration
+@attribute [StreamRendering(true)]
+
+<PageTitle>Top voted products</PageTitle>
+
+<h1>Products</h1>
+
+<p>Here are the top voted products</p>
+
+<div class="product">
+    @if (ProductRankings is null)
+    {
+        <p>No product rankings yet</p>
+    }
+    else
+    {   
+            <div>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                @for (int i = 0; i < ProductRankings.Length; i++)
+                {
+                     <tr>
+                        <td class="card" style="width:50%">
+                            <img src="images/@SortedProducts[i].ImageUrl" alt="@SortedProducts[i].Name" style="width:100%">
+                            <div class="container" @key="@SortedProducts[i].Id">
+                                <b>@SortedProducts[i].Name</b>
+                            </div>
+                        </td>
+                        <td align="left">
+                            <div>
+                                <h1>
+                                    @ProductRankings[i].Score
+                                </h1>
+                                <h4>
+                                    customers liked @SortedProducts[i].Name
+                                </h4>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </table>
+
+            </div>
+    }
+</div>
+
+@code {
+    private ProductRanking[]? ProductRankings;
+    private Product[]? SortedProducts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("getting the product rankings: TopVotedProdcuts.razor OnInitializedAsync()");
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        ProductRankings = await ProductService.GetProductRankings();
+
+        Product[] _sortedProducts = new Product[ProductRankings.Length];
+
+        for (int i = 0; i < ProductRankings.Length; i++)
+        {
+            var _productId = ProductRankings[i].ProductId;
+            Product _product = await ProductService.GetProductById(_productId);
+            _sortedProducts[i] = _product;            
+        }
+
+        SortedProducts = _sortedProducts;
+    }
+
+}
+

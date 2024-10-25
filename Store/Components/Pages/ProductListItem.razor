@@ -1,22 +1,44 @@
 ﻿@using DataEntities
 @using Store.Services
 @inject ProductService ProductService
+@inject NavigationManager Nav
+@inject IHttpContextAccessor HttpContextAccessor
+@attribute [StreamRendering]
 
 <div class="catalog-item">
     <a class="catalog-product" href="@ProductItemURL" data-enhance-nav="false">
         <span class='catalog-product-image'>
             <img alt="@product.Name" src='images/@product.ImageUrl' />
         </span>
-        <span class='catalog-product-content'>
-            <span class='name'>@product.Name</span>
-            <span class='price'>$@product.Price.ToString("0.00")</span>
-        </span>
     </a>
+    <div @key="@product.Id">
+        <form method="post" data-enhance>
+            <input type="hidden" name="_handler" value="@FormName" />
+            <span class='catalog-product-content'>
+                <span class='name'>@product.Name</span>
+                <span class='price'>$@product.Price.ToString("0.00")</span>
+                <AntiforgeryToken />
+                <button type="submit"
+                        class="button button-secondary">
+                    Like
+                </button>
+            </span>
+        </form>
+    </div>   
 </div>
+<form @formname="@FormName" @onsubmit="@VoteProductAsync"></form>
 
 @code {
     [Parameter, EditorRequired]
     public required Product product { get; set; }
 
     private string ProductItemURL => $"/product/{product.Id}";
+
+    private string FormName => $"like-{product.Name}";
+
+    private async Task VoteProductAsync()
+    {
+        Console.WriteLine("liking product");
+        await ProductService.PostProductRankingAsync(product.Id);
+    }
 }
