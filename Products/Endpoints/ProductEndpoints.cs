@@ -34,7 +34,17 @@ public static class ProductEndpoints
             var ProductString = ((await RedisDb.StringGetAsync($"{id}"+$"_{CacheKeyPostFix}")));
             if (!ProductString.Equals(RedisValue.Null))
             {
-                Product _product = JsonSerializer.Deserialize<Product>(ProductString.ToString());
+                string[] product_properties = ProductString.ToString().Split("_&_");
+                // Product _product = JsonSerializer.Deserialize<Product>(ProductString.ToString());
+                Product _product = new Product
+                {
+                    Id = int.Parse(product_properties[0]),
+                    Name = product_properties[1],
+                    Category = product_properties[2],
+                    Description = product_properties[3],
+                    Price = decimal.Parse(product_properties[4]),
+                    ImageUrl = product_properties[5]
+                };
                 return Results.Ok(_product);
             }
             else 
@@ -42,7 +52,12 @@ public static class ProductEndpoints
                 Product product = await db.Product.AsNoTracking()
                                .FirstOrDefaultAsync(model => model.Id == id) is Product model ? model : throw new Exception("item not found");
 
-                await RedisDb.StringSetAsync($"{id}"+$"_{CacheKeyPostFix}",JsonSerializer.Serialize(product));
+                string product_properties = product.Id + "_&_" + product.Name + "_&_" + product.Category + "_&_" + product.Description + "_&_" + product.Price + "_&_" + product.ImageUrl;
+                
+                await RedisDb.StringSetAsync($"{id}"+$"_{CacheKeyPostFix}", product_properties);
+                // await RedisDb.StringSetAsync($"{id}"+$"_{CacheKeyPostFix}",JsonSerializer.Serialize(product));
+
+
 
                 return Results.Ok(model);
             }
