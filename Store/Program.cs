@@ -31,6 +31,8 @@ builder.Services.AddRazorComponents()
 // Add Redis cache
 builder.AddRedisClient("cache");
 
+builder.AddRedisOutputCache("cache");
+
 builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -56,6 +58,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IEmailSender<StoreUser>, IdentityNoOpEmailSender>();
 
 var app = builder.Build();
+
+app.UseOutputCache();
 
 app.MapDefaultEndpoints();
 
