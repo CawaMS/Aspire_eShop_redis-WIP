@@ -29,6 +29,8 @@ builder.Services.AddRazorComponents()
 // Add Redis cache
 builder.AddRedisClient("cache");
 
+builder.AddRedisOutputCache("cache");
+
 builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -79,6 +81,9 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.UseOutputCache();
+
 app.UseAuthorization();
 
 app.MapRazorComponents<App>()
