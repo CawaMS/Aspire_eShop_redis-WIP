@@ -10,6 +10,7 @@ using StackExchange.Redis;
 using Microsoft.Extensions.Hosting;
 using Aspire.StackExchange.Redis;
 using Microsoft.Build.Framework;
+using System.ComponentModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +36,26 @@ var configurationOptions = await ConfigurationOptions.Parse($"{_redisHostName}")
 
 Console.WriteLine($"Redis connection string: {_redisHostName}");
 
+//foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(configurationOptions))
+//{
+//    string name = descriptor.Name;
+//    object value = descriptor.GetValue(configurationOptions);
+//    Console.WriteLine("{0}={1}", name, value);
+//}
+
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(configurationOptions));
+
+builder.Services.AddStackExchangeRedisOutputCache(options =>
+{
+    options.ConfigurationOptions = configurationOptions;
+    options.InstanceName = "SampleInstance";
+});
+
+builder.Services.AddOutputCache(options =>
+{
+    options.AddBasePolicy(builder =>
+        builder.Expire(TimeSpan.FromSeconds(180)));
+});
 
 builder.Services.AddCascadingAuthenticationState();
 
@@ -88,7 +108,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// app.UseOutputCache();
+app.UseOutputCache();
 
 app.UseAuthorization();
 
