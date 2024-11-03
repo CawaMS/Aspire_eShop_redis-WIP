@@ -25,6 +25,7 @@ resource redisCache_enclX3umP 'Microsoft.Cache/redisEnterprise@2024-05-01-previe
   }
   properties: {
     minimumTlsVersion: '1.2'
+    highAvailability: 'Disabled'
   }
 }
 
