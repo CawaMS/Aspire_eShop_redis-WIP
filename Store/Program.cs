@@ -5,16 +5,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Store.Components.Account;
 using Store.Data;
+using Azure.Identity;
+using StackExchange.Redis;
+using Microsoft.Extensions.Hosting;
+using Aspire.StackExchange.Redis;
+using Microsoft.Build.Framework;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// builder.AddSqlServerDbContext<UserContext>("ProductsContext");
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProductContext") ?? throw new InvalidOperationException("Connection string 'ProductsContext' not found.")));
 
 builder.AddServiceDefaults();
 
-//builder.Services.AddSingleton<ProductService>();
 builder.Services.AddHttpClient<ProductService>(client =>
 {
     client.BaseAddress = new("https+http://products");
@@ -26,10 +29,13 @@ builder.Services.AddScoped<ICartService, CartServiceCache>();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Add Redis cache
-builder.AddRedisClient("cache");
+// Add Redis cache, with Entra ID
+var _redisHostName = builder.Configuration.GetConnectionString("cache");
+var configurationOptions = await ConfigurationOptions.Parse($"{_redisHostName}").ConfigureForAzureWithTokenCredentialAsync(new DefaultAzureCredential());
 
-builder.AddRedisOutputCache("cache");
+Console.WriteLine($"Redis connection string: {_redisHostName}");
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(configurationOptions));
 
 builder.Services.AddCascadingAuthenticationState();
 
@@ -82,7 +88,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.UseOutputCache();
+// app.UseOutputCache();
 
 app.UseAuthorization();
 
