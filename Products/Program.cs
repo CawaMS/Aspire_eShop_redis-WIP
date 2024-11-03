@@ -6,12 +6,12 @@ using StackExchange.Redis;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.Services.AddDbContext<ProductDataContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("ProductsContext") ?? throw new InvalidOperationException("Connection string 'ProductsContext' not found.")));
+//builder.Services.AddDbContext<ProductDataContext>(options =>
+//    options.UseSqlite(builder.Configuration.GetConnectionString("ProductsContext") ?? throw new InvalidOperationException("Connection string 'ProductsContext' not found.")));
 
 // builder.AddSqlServerDbContext<ProductDataContext>("ProductsContext");
-//builder.Services.AddDbContext<ProductDataContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("ProductContext") ?? throw new InvalidOperationException("Connection string 'ProductsContext' not found.")));
+builder.Services.AddDbContext<ProductDataContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ProductContext") ?? throw new InvalidOperationException("Connection string 'ProductsContext' not found.")));
 
 // Add Redis cache
 builder.AddRedisClient("cache");
