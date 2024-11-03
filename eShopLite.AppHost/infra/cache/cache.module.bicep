@@ -11,28 +11,44 @@ resource keyVault_IeF8jZvXV 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
 
-resource redisCache_enclX3umP 'Microsoft.Cache/Redis@2020-06-01' = {
+resource redisCache_enclX3umP 'Microsoft.Cache/redisEnterprise@2024-05-01-preview' = {
   name: toLower(take('cache${uniqueString(resourceGroup().id)}', 24))
   location: location
   tags: {
     'aspire-resource-name': 'cache'
   }
+  sku: {
+    name: 'Balanced_B1'
+  }
+  identity: {
+    type: 'None'
+  }
   properties: {
-    enableNonSslPort: false
     minimumTlsVersion: '1.2'
-    sku: {
-      name: 'Basic'
-      family: 'C'
-      capacity: 3
+  }
+}
+
+resource redisEnterpriseDatabase 'Microsoft.Cache/redisEnterprise/databases@2024-05-01-preview' = {
+  name: 'default'
+  parent: redisCache_enclX3umP
+  properties:{
+    clientProtocol: 'Encrypted'
+    port: 10000
+    clusteringPolicy: 'OSSCluster'
+    evictionPolicy: 'NoEviction'
+    persistence:{
+      aofEnabled: false 
+      rdbEnabled: false
     }
   }
 }
+
 
 resource keyVaultSecret_Ddsc3HjrA 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   parent: keyVault_IeF8jZvXV
   name: 'connectionString'
   location: location
   properties: {
-    value: '${redisCache_enclX3umP.properties.hostName},ssl=true,password=${redisCache_enclX3umP.listKeys(redisCache_enclX3umP.apiVersion).primaryKey}'
+    value: '${redisCache_enclX3umP.properties.hostName}:10000,ssl=true,password=${redisEnterpriseDatabase.listKeys().primaryKey},abortConnect=False'
   }
 }
