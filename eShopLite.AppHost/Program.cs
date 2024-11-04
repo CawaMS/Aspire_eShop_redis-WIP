@@ -7,17 +7,9 @@ var sql = builder.AddSqlServer("sqlserver")
                        .PublishAsAzureSqlDatabase()
                        .AddDatabase("ProductContext");
 
-// var sql = builder.AddSqlServer("sqlserver")
-//                        .PublishAsConnectionString()
-//                        .AddDatabase("ProductContext");
-
-//var sql = builder.AddSqlServer("sql")
-//                 .AddDatabase("ProductContext");
-
 
 var cache = builder.AddRedis("cache")
-                   .PublishAsConnectionString();
-// var cache = builder.AddRedis("cache");
+                    .PublishAsAzureRedis();
 
 var products = builder.AddProject<Products>("products")
                 .WithExternalHttpEndpoints()
