@@ -94,6 +94,9 @@ dotnet run
 ```
 
 #### Hydrate cache
+
+Skip this step for **SQL** only environment
+
 1. Change directory to the TestData folder
 ```
 cd ..
@@ -142,6 +145,7 @@ dotnet run
 
 #### Run test with multiple environments
 Repeat the same process for all the environments you want to run. Suggested:
+- Compare **SQL** only environment with **OSS Basic B3** to show that adding Redis makes the response times faster.
 - Compare **OSS Basic B3** to **AMR Balanced B5 without HA**. Scenario is for around 5GB cache for getting started scenarios.
 
 
