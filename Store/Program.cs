@@ -81,6 +81,8 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IEmailSender<StoreUser>, IdentityNoOpEmailSender>();
 
+builder.Services.AddBlazorBootstrap();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
