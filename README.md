@@ -50,11 +50,14 @@ git clone -b <branch> https://github.com/CawaMS/Aspire_eShop_redis-WIP.git
 ```
 The follow branches contains the customized bicep files generated from `azd infra synth` command.
 The `infra` folder can be found in the `eShopLite.AppHost` folder
-- OSS Basic C3 (~5G) with Entra ID: [azd_BasicC3_EntraID](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_BasicC3_EntraID)
-- OSS Basic C3 (~5G)  with automatically populated connection strings in key vault: [azd_BasicC3_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_BasicC3_ConnectionString)
-- Azure Managed Redis (Preview) B5 (~5G) with High Availability using automatically populated connection strings in Key Vault: [azd_AmrB5-HA_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_AmrB5-HA_ConnectionString)
-- Azure Managed Redis (Preview) B5 (~5G) without High Availability using automatically populated connection strings in Key Vault: [azd_AmrB5-HA_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_AmrB5-noHA_ConnectionString)
+- OSS Basic C3 (~5G, $131.4/mon) with Entra ID: [azd_BasicC3_EntraID](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_BasicC3_EntraID)
+- OSS Basic C3 (~5G, $131.4/mon)  with automatically populated connection strings in key vault: [azd_BasicC3_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_BasicC3_ConnectionString)
+- Azure Managed Redis (Preview) B5 (~5G, $227.76/mon) with High Availability using automatically populated connection strings in Key Vault: [azd_AmrB5-HA_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_AmrB5-HA_ConnectionString)
+- Azure Managed Redis (Preview) B5 (~5G, $113.88/mon) without High Availability using automatically populated connection strings in Key Vault: [azd_AmrB5-noHA_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_AmrB5-noHA_ConnectionString)
 - A generic project that takes any user-provided connection string: [azure_publishRedisAsConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azure_publishRedisAsConnectionString)
+
+    - Example connection string for AMR or Redis Enterprise: [redis-instance-name].eastus.redisenterprise.cache.azure.net:10000,password=[redis-access-key],ssl=True,abortConnect=False
+    - Example connection string for Redis OSS: [redis-instance-name].redis.cache.windows.net:6380,password=[redis-access-key],ssl=True,abortConnect=False
 - .NET 9 Hybrid Cache preview: [dotnet9](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/dotnet9)
 
 ## Features to demo
