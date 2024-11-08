@@ -40,6 +40,8 @@ The B1 SKU is designed for quick dev/test scenario in Azure.
     azd up
     ```
 
+4. Recommending to use 'North Europe' for the time being. All region, control plane, and performance optimziations roll out will finish on Thursday Nov 14. 
+
 ## Running the project in Azure using other Azure Redis service SKUs
 
 To clone a branch use:
@@ -48,10 +50,10 @@ git clone -b <branch> https://github.com/CawaMS/Aspire_eShop_redis-WIP.git
 ```
 The follow branches contains the customized bicep files generated from `azd infra synth` command.
 The `infra` folder can be found in the `eShopLite.AppHost` folder
-- OSS Basic C3 with Entra ID: [azd_BasicC3_EntraID](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_BasicC3_EntraID)
-- OSS Basic C3 with automatically populated connection strings in key vault: [azd_BasicC3_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_BasicC3_ConnectionString)
-- Azure Managed Redis (Preview) B5 with High Availability using automatically populated connection strings in Key Vault: [azd_AmrB5-HA_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_AmrB5-HA_ConnectionString)
-- Azure Managed Redis (Preview) B5 without High Availability using automatically populated connection strings in Key Vault: [azd_AmrB5-HA_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_AmrB5-noHA_ConnectionString)
+- OSS Basic C3 (~5G) with Entra ID: [azd_BasicC3_EntraID](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_BasicC3_EntraID)
+- OSS Basic C3 (~5G)  with automatically populated connection strings in key vault: [azd_BasicC3_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_BasicC3_ConnectionString)
+- Azure Managed Redis (Preview) B5 (~5G) with High Availability using automatically populated connection strings in Key Vault: [azd_AmrB5-HA_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_AmrB5-HA_ConnectionString)
+- Azure Managed Redis (Preview) B5 (~5G) without High Availability using automatically populated connection strings in Key Vault: [azd_AmrB5-HA_ConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azd_AmrB5-noHA_ConnectionString)
 - A generic project that takes any user-provided connection string: [azure_publishRedisAsConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azure_publishRedisAsConnectionString)
 - .NET 9 Hybrid Cache preview: [dotnet9](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/dotnet9)
 
