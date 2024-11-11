@@ -53,6 +53,7 @@ properties:
             secretRef: connectionstrings--cache
     scale:
       minReplicas: 1
+      maxReplicas: 1000
 tags:
   azd-service-name: store
   aspire-resource-name: store
