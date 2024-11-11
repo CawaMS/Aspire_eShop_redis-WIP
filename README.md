@@ -100,6 +100,60 @@ The Leaderboard feature can also be demo-ed at scale using the **SimulateLikePro
 
     ![Like products](./images/SimulateLikeProducts.png)
 
+#### Demo Leaderboard with Active Geo replication
+For geo distributed applications, Redis Enterprise Actvie Geo Replication feature provides simple and success way for each regional deployment to write to the Redis Cache closest to the client application. Redis instances can be configured in an Active geo replication group to have the data synced in real-time.
+
+To setup Leaderboard scenario for Active Geo Replication:
+
+- Create two Azure Managed Redis (Preview) instances in an active geo replication group.
+
+    - Use [Redis Enterprise - Create](https://learn.microsoft.com/rest/api/redis/redisenterprisecache/redis-enterprise/create?view=rest-redis-redisenterprisecache-2023-11-01&tabs=HTTP) to create geo-replicated Redis Enterprise Cluster 1
+
+        For example, the properties can be:
+
+        ```
+            {
+            "location": "West US 2",
+            "sku": {
+                "name": "Balanced_B1",
+                }
+            }
+        ```
+    - Repeat step above to create geo-replicated Redis Enterprise Cluster 2
+    - Use [Databases - Create](https://learn.microsoft.com/rest/api/redis/redisenterprisecache/databases/create?view=rest-redis-redisenterprisecache-2024-02-01&tabs=HTTP#georeplication) to create two linked databases in the clusters above.
+
+        For example, the body can be:
+
+        ```
+        {
+            "properties": {
+            "clientProtocol": "Encrypted",
+            "clusteringPolicy": "EnterpriseCluster",
+            "evictionPolicy": "NoEviction",
+            "port": 10000,
+            "geoReplication": {
+            "groupNickname": "groupName",
+            "linkedDatabases": [
+                {
+                    "id": "/subscriptions/af4d7ddc-4fc2-4ccf-930d-a8b57a1dcea6/resourceGroups/choliema-rg/providers/Microsoft.Cache/RedisEnterprise/choliema-3/databases/default"
+                },
+                {
+                    "id": "/subscriptions/af4d7ddc-4fc2-4ccf-930d-a8b57a1dcea6/resourceGroups/choliema-rg/providers/Microsoft.Cache/RedisEnterprise/choliema-4/databases/default"
+                }
+                ]
+            }
+        }
+        }
+        ```
+
+- Download the [azure_publishRedisAsConnectionString](https://github.com/CawaMS/Aspire_eShop_redis-WIP/tree/azure_publishRedisAsConnectionString) branch
+- run `azd init` and `azd up`, pass in the connection string of one of the Geo replicated Redis Enterprise databases
+- Repeat above step. Pass in the connection string of the second replica of the Geo replicated Redis Enterprise databases
+- Put two Store applications side-by-side. Liking one of the applications would update both **Top Product** pages
+
+    ![Geo replicated leaderboard](./images/GeoReplicatedLeaderboarded.png)
+
+
 ### Distributed Cache
 The getProductById is an important page where users can add an item to the shopping cart. The code for doing so in .NET 8 is at [ProductEndpoints.cs line 32](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/d50eee66de22dbe0e392b26869f3f0a3ca251f06/Products/Endpoints/ProductEndpoints.cs#L32) and for .NET 9 is at [ProductEndpoints.cs line L32](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/a0c9f40518b6c04af9868d7d3a8b9191d0201901/Products/Endpoints/ProductEndpoints.cs#L32). 
 **Noticing the simplified programming interface for .NET 9 Hybrid Cache!**
