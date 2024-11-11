@@ -1,9 +1,11 @@
 ﻿@page "/topvotedproducts"
 @using DataEntities
 @using Store.Services
+@inject NavigationManager navigationManager
 @inject ProductService ProductService
 @inject IConfiguration Configuration
 @attribute [StreamRendering(true)]
+@rendermode InteractiveServer
 
 <PageTitle>Top voted products</PageTitle>
 
@@ -55,8 +57,34 @@
     private ProductRanking[]? ProductRankings;
     private Product[]? SortedProducts;
 
+    private Timer? _timer;
+
     protected override async Task OnInitializedAsync()
     {
+        SortedProducts = await GetProductRanking();
+
+        // Set up a timer to update the current time every 2 seconds
+        var timer = new System.Threading.Timer(
+            e =>
+            {
+                InvokeAsync(async () =>
+                {
+                    SortedProducts = await GetProductRanking();
+
+                    // Call this to force the server to send a new updated view
+                    StateHasChanged();
+                });
+            },
+            null,
+            TimeSpan.Zero,
+            TimeSpan.FromSeconds(1)
+        );
+
+    }
+
+
+    private async Task<Product[]> GetProductRanking()
+    {      
         Console.WriteLine("getting the product rankings: TopVotedProdcuts.razor OnInitializedAsync()");
         // Simulate asynchronous loading to demonstrate streaming rendering
         ProductRankings = await ProductService.GetProductRankings();
@@ -67,10 +95,10 @@
         {
             var _productId = ProductRankings[i].ProductId;
             Product _product = await ProductService.GetProductById(_productId);
-            _sortedProducts[i] = _product;            
+            _sortedProducts[i] = _product;
         }
 
-        SortedProducts = _sortedProducts;
+        return _sortedProducts;
     }
 
 }
