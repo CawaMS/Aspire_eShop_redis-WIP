@@ -3,6 +3,7 @@ using Store.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Store.Components.Account;
 using Store.Data;
 
@@ -24,7 +25,8 @@ builder.Services.AddScoped<ICartService, CartServiceCache>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+            .AddInteractiveServerComponents()
+            .AddInteractiveWebAssemblyComponents();
 
 // Add Redis cache
 builder.AddRedisClient("cache");
