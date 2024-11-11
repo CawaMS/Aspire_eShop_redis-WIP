@@ -75,7 +75,30 @@ The eShop uses Redis to store volatile data like Shopping Cart. Code is at [Cart
 ### Leaderboard
 The eShop uses Redis SortedSet to save leaderboard of top liked items. Click on the "like" button at the product overview page for a few items and multiple times. The *Top Products* page would display the sorted items.
 
-**TODO** Add an application to automatically simulate a lot of users voting in real time.
+The Leaderboard feature can also be demo-ed at scale using the **SimulateLikeProducts** project:
+
+- (Pre-req): Deploy the eShopLite project to Azure
+- Obtain the **Products** service URL, similar to `https://products.[domain-name].northeurope.azurecontainerapps.io`
+- Open the **Store** service URL to a browser. Click on the **Top Product** tab
+- Ensure user **IS NOT** logged in
+- Open a command prompt in your demo laptop. Change directory to the **SimulateLikeProducts** project.
+
+    ```
+    cd SimulateLikeProducts
+    ```
+- Set user secrets configuration, build and run the simulation
+
+    ```
+    dotnet user-secrets set ProductApiUrl  https://products.[domain-name].northeurope.azurecontainerapps.io
+    dotnet build
+    dotnet build
+    ```
+
+**NOTE: Refresh the browser a few times before the automatic refreshing takes place.**
+
+- You can see the liked product numbers updating in real time.
+
+    ![Like products](./images/SimulateLikeProducts.png)
 
 ### Distributed Cache
 The getProductById is an important page where users can add an item to the shopping cart. The code for doing so in .NET 8 is at [ProductEndpoints.cs line 32](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/d50eee66de22dbe0e392b26869f3f0a3ca251f06/Products/Endpoints/ProductEndpoints.cs#L32) and for .NET 9 is at [ProductEndpoints.cs line L32](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/a0c9f40518b6c04af9868d7d3a8b9191d0201901/Products/Endpoints/ProductEndpoints.cs#L32). 
