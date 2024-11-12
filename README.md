@@ -40,7 +40,7 @@ The B1 SKU is designed for quick dev/test scenario in Azure.
     azd up
     ```
 
-4. Recommending to use 'North Europe' for the time being. All region, control plane, and performance optimziations roll out will finish on Thursday Nov 14. 
+4. Recommending to use 'East US'. All region, control plane, and performance optimziations roll out will finish on Thursday Nov 14. 
 
 ## Running the project in Azure using other Azure Redis service SKUs
 
@@ -67,7 +67,12 @@ The eShop product catalog is using Output Cache for fast access. NOTE that this 
 Code is at [Program.cs line 32](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/d50eee66de22dbe0e392b26869f3f0a3ca251f06/Store/Program.cs#L32) and [Products.razor line 7](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/d50eee66de22dbe0e392b26869f3f0a3ca251f06/Store/Components/Pages/Products.razor#L7)
 
 ### Entra ID
-The eShop Redis Cache connections are using Entra ID for secure, passwordless auth. Code example at [Program.cs line 35](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/4e956d0be933ace1c6eca03b8afa783b7fddf07e/Store/Program.cs#L35)
+
+- The .NET 9 Aspire uses Entra ID for Redis by default. See code at [Products/Program.cs](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/a10d69ab07dcc399cd1c543eb9d075caf2f5e3ad/Products/Program.cs#L19) and [eShopLite.AppHost/Program.cs](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/a10d69ab07dcc399cd1c543eb9d075caf2f5e3ad/eShopLite.AppHost/Program.cs#L10)
+
+- The eShop Redis Cache connections are using Entra ID for secure, passwordless auth. Code example at [Program.cs line 35](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/4e956d0be933ace1c6eca03b8afa783b7fddf07e/Store/Program.cs#L35)
+
+
 
 ### Shopping Cart
 The eShop uses Redis to store volatile data like Shopping Cart. Code is at [CartService.cs](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/main/Store/Services/CartService.cs)
