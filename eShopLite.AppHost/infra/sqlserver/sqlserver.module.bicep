@@ -1,13 +1,15 @@
 targetScope = 'resourceGroup'
 
-@description('')
-param location string = resourceGroup().location
+// @description('')
+// param location string = resourceGroup().location
 
 @description('')
 param principalId string
 
 @description('')
 param principalName string
+
+var location = 'northeurope'
 
 
 resource sqlServer_YFcCarAEq 'Microsoft.Sql/servers@2020-11-01-preview' = {
