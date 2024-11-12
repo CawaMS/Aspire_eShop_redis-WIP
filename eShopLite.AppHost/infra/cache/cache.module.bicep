@@ -11,7 +11,7 @@ resource keyVault_IeF8jZvXV 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
 
-resource redisCache_enclX3umP 'Microsoft.Cache/redisEnterprise@2024-05-01-preview' = {
+resource redisCache_enclX3umP 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' = {
   name: toLower(take('cache${uniqueString(resourceGroup().id)}', 24))
   location: location
   tags: {
@@ -29,7 +29,7 @@ resource redisCache_enclX3umP 'Microsoft.Cache/redisEnterprise@2024-05-01-previe
   }
 }
 
-resource redisEnterpriseDatabase 'Microsoft.Cache/redisEnterprise/databases@2024-05-01-preview' = {
+resource redisEnterpriseDatabase 'Microsoft.Cache/redisEnterprise/databases@2024-09-01-preview' = {
   name: 'default'
   parent: redisCache_enclX3umP
   properties:{

@@ -45,7 +45,7 @@ module sqlserver 'sqlserver/sqlserver.module.bicep' = {
   name: 'sqlserver'
   scope: rg
   params: {
-    location: location
+    //location: location
     principalId: resources.outputs.MANAGED_IDENTITY_PRINCIPAL_ID
     principalName: resources.outputs.MANAGED_IDENTITY_NAME
   }
