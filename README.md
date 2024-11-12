@@ -230,6 +230,19 @@ Repeat the same process for all the environments you want to run. Suggested:
 - Compare **SQL** only environment with **OSS Basic B3** to show that adding Redis makes the response times faster.
 - Compare **OSS Basic B3** to **AMR Balanced B5 without HA**. Scenario is for around 5GB cache for getting started scenarios.
 
+Here are the reference load test results. The SQL database and Redis Cache instances are pre-loaded with 5000 products info. 1000 vUsers are randomly reading a product detail at a time. Total 7 minutes, with 2 minutes of warm-up time.
+
+**SQL-backed product by id API Load test result**
+![SQL load test result](./images/SQL-LoadTest.png)
+
+**OSS Basic C3 (~5G) backed product by id API Load test result**
+![Basic C3 load test result](./images/BasicC3-LoadTest.png)
+
+**AMR (Preview) B5 (~5GB) No HA Single node backed product by id API load test result**
+![AMR B5 No HA load test result](./images/AMR-B5-NoHA-LoadTestResult.png)
+
+
+
 
 
 
