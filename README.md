@@ -22,8 +22,8 @@ Thanks to the colleagues who worked on the two reference projects!
     ```
     
 
-## Running the project in Azure using Azure Managed Redis (Preview) B1 
-The B1 SKU is designed for quick dev/test scenario in Azure.
+## Running the project in Azure using Azure Managed Redis (Preview) B5
+This sample uses two AMR instances. One B5 OSS Clustering mode for session store and performance scenarios, and another Enterprise clustering mode for using RediSearch module for Vector Similarity Search.
 
 1. Download this repository
     ```
@@ -40,7 +40,7 @@ The B1 SKU is designed for quick dev/test scenario in Azure.
     azd up
     ```
 
-4. Recommending to use 'East US'. All region, control plane, and performance optimziations roll out will finish on Thursday Nov 14. 
+4. Recommending to use 'Australia East', so resources Redis, SQL, and Open AI won't run into quota constains in your internal Azure subscription. 
 
 ## Running the project in Azure using other Azure Redis service SKUs
 
@@ -157,6 +157,18 @@ To setup Leaderboard scenario for Active Geo Replication:
 - Put two Store applications side-by-side. Liking one of the applications would update both **Top Product** pages
 
     ![Geo replicated leaderboard](./images/GeoReplicatedLeaderboarded.png)
+
+
+### Vector Similarity Search for Product Recommendations
+It's a common feature for eShop websites to show similar products from browsing history. This would increase the chances for customers to purchase by providing more options easily.
+Click into a Product to view details. The similar items on recommended by Vector Similarity Search on the product descriptions. This is using the ada-textembedding 2 model and RediSearch to achive.
+
+![Similar Product](./images/SimilarProduct.png)
+
+- The code is for creating vector embeddings is at [product/Data/DescriptionEmbeddings.cs](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/main/Products/Data/DescriptionEmbeddings.cs).
+
+- The code is for performance vector similarity search is at [Store/Services/SimilarItemsService.cs](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/main/Store/Services/SimilarItemsService.cs).
+
 
 
 ### Distributed Cache
