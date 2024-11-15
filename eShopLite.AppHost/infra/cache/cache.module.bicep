@@ -21,7 +21,7 @@ resource redisCache_enclX3umP 'Microsoft.Cache/Redis@2020-06-01' = {
     enableNonSslPort: false
     minimumTlsVersion: '1.2'
     sku: {
-      name: 'Basic'
+      name: 'Standard'
       family: 'C'
       capacity: 3
     }
