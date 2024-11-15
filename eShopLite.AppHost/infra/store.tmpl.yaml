@@ -24,8 +24,15 @@ properties:
       - name: connectionstrings--productcontext
         value: Server=tcp:{{ .Env.SQLSERVER_SQLSERVERFQDN }},1433;Encrypt=True;Authentication="Active Directory Default";Database=ProductContext
       - name: connectionstrings--cache
-        keyVaultUrl: '{{ .Env.SERVICE_BINDING_KV265DAFE5_ENDPOINT }}secrets/connectionString'
-        identity: {{ .Env.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}
+        value: '{{ .Env.CACHE_CONNECTIONSTRING }}'
+      - name: connectionstrings--openai
+        value: '{{ .Env.OPENAI_CONNECTIONSTRING }}'
+      - name: connectionstrings--textembedding
+        value: '{{ .Env.OPENAI_TEXTEMBEDDINGNAME }}'
+      - name: connectionstrings--gpt4
+        value: '{{ .Env.OPENAI_GPTNAME }}'           
+      - name: connectionstrings--redisvss
+        value: '{{ .Env.REDISVSS_CONNECTIONSTRING }}'
   template:
     containers:
       - image: {{ .Image }}
@@ -51,9 +58,16 @@ properties:
             secretRef: connectionstrings--productcontext
           - name: ConnectionStrings__cache
             secretRef: connectionstrings--cache
+          - name: ConnectionStrings__openai
+            secretRef: connectionstrings--openai
+          - name: ConnectionStrings__textembedding
+            secretRef: connectionstrings--textembedding 
+          - name: ConnectionStrings__gpt4
+            secretRef: connectionstrings--gpt4                          
+          - name: ConnectionStrings__redisvss
+            secretRef: connectionstrings--redisvss
     scale:
       minReplicas: 1
-      maxReplicas: 1000
 tags:
   azd-service-name: store
   aspire-resource-name: store

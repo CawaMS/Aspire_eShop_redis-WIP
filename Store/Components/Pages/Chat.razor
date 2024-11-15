@@ -1,0 +1,41 @@
+﻿@page "/chat"
+@using DataEntities
+@using Store.Services
+@using System.Text
+@inject ChatService ChatService
+@rendermode InteractiveServer
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="_content/Blazor.Bootstrap/blazor.bootstrap.css" rel="stylesheet" />
+</head>
+
+<h2>Ask your questions about our products ... </h2>
+
+<div>
+    <textarea cols="350" rows="30" @bind="_conversationHistory"></textarea>
+</div>
+<div>
+    <textarea @bind="_inputMessage" placeholder="Ask a question ..." cols="350" rows="5" class="chatboxinput" />
+    <button Color="ButtonColor.Info" @onclick="SendChat" type="submit">
+        Send
+        <Icon Name="IconName.Send" />
+    </button>
+</div>
+
+@code {
+
+    private string? _conversationHistory = string.Empty;
+    private string? _inputMessage = string.Empty;
+    private StringBuilder? _conversation = new StringBuilder();
+
+    private async Task SendChat()
+    {
+        var _response = await ChatService.GetChatResponse(_inputMessage);
+        _conversation.AppendLine($"You: {_inputMessage}");
+        _conversation.AppendLine($"Bot: {ChatService.GetChatResponse(_inputMessage).Result}");
+        _conversationHistory = _conversation.ToString();
+        _inputMessage = string.Empty;
+    }
+}

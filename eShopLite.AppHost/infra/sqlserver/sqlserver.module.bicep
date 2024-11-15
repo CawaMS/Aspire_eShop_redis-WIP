@@ -1,26 +1,16 @@
-targetScope = 'resourceGroup'
-
-// @description('')
+@description('The location for the resource(s) to be deployed.')
 // param location string = resourceGroup().location
 
-@description('')
 param principalId string
 
-@description('')
 param principalName string
 
-var location = 'northeurope'
+var location = 'australiaeast'
 
-resource sqlServer_YFcCarAEq 'Microsoft.Sql/servers@2020-11-01-preview' = {
-  name: toLower(take('sqlserver${uniqueString(resourceGroup().id)}', 24))
+resource sqlserver 'Microsoft.Sql/servers@2021-11-01' = {
+  name: take('sqlserver-${uniqueString(resourceGroup().id)}', 63)
   location: location
-  tags: {
-    'aspire-resource-name': 'sqlserver'
-  }
   properties: {
-    version: '12.0'
-    minimalTlsVersion: '1.2'
-    publicNetworkAccess: 'Enabled'
     administrators: {
       administratorType: 'ActiveDirectory'
       login: principalName
@@ -28,24 +18,28 @@ resource sqlServer_YFcCarAEq 'Microsoft.Sql/servers@2020-11-01-preview' = {
       tenantId: subscription().tenantId
       azureADOnlyAuthentication: true
     }
+    minimalTlsVersion: '1.2'
+    publicNetworkAccess: 'Enabled'
+    version: '12.0'
+  }
+  tags: {
+    'aspire-resource-name': 'sqlserver'
   }
 }
 
-resource sqlFirewallRule_9ocemjyMQ 'Microsoft.Sql/servers/firewallRules@2020-11-01-preview' = {
-  parent: sqlServer_YFcCarAEq
+resource sqlFirewallRule_AllowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2021-11-01' = {
   name: 'AllowAllAzureIps'
   properties: {
-    startIpAddress: '0.0.0.0'
     endIpAddress: '0.0.0.0'
+    startIpAddress: '0.0.0.0'
   }
+  parent: sqlserver
 }
 
-resource sqlDatabase_Fyb2MmtgF 'Microsoft.Sql/servers/databases@2020-11-01-preview' = {
-  parent: sqlServer_YFcCarAEq
+resource ProductContext 'Microsoft.Sql/servers/databases@2021-11-01' = {
   name: 'ProductContext'
   location: location
-  properties: {
-  }
+  parent: sqlserver
 }
 
-output sqlServerFqdn string = sqlServer_YFcCarAEq.properties.fullyQualifiedDomainName
+output sqlServerFqdn string = sqlserver.properties.fullyQualifiedDomainName

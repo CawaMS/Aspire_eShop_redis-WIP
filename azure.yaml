@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
-name: eshoplite-apphost
+name: Aspire_eShop_Redis-dev
 services:  
   app:
     language: dotnet
-    project: ./eShopLite.AppHost.csproj
+    project: ./eShopLite.AppHost/eShopLite.AppHost.csproj
     host: containerapp

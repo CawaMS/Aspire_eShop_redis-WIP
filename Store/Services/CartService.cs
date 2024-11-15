@@ -19,7 +19,7 @@ namespace Store.Services
         private const string UserIdFieldKey = "UserId";
 
 
-        public CartServiceCache(IConnectionMultiplexer redisConnectionMultiplexer)
+        public CartServiceCache([FromKeyedServices("cache")]IConnectionMultiplexer redisConnectionMultiplexer)
         {
             _redisConnectionMultiplexer = redisConnectionMultiplexer;
             _database = _redisConnectionMultiplexer.GetDatabase();
@@ -132,7 +132,7 @@ namespace Store.Services
             var CartKey = GetCartKey(userName);
             byte[]? cartItemslist = await _database.HashGetAsync(CartKey, CartItemListFieldKey);
 
-            if (cartItemslist.IsNullOrEmpty())
+            if (cartItemslist == null)
             {
                 yield break;
             }

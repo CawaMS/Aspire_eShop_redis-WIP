@@ -37,8 +37,27 @@ module cache 'cache/cache.module.bicep' = {
   name: 'cache'
   scope: rg
   params: {
-    keyVaultName: resources.outputs.SERVICE_BINDING_KV265DAFE5_NAME
     location: location
+    principalId: resources.outputs.MANAGED_IDENTITY_PRINCIPAL_ID
+    //principalName: resources.outputs.MANAGED_IDENTITY_NAME
+  }
+}
+module openai 'openai/openai.module.bicep' = {
+  name: 'openai'
+  scope: rg
+  params: {
+    location: location
+    principalId: resources.outputs.MANAGED_IDENTITY_PRINCIPAL_ID
+    principalType: 'ServicePrincipal'
+  }
+}
+module redisvss 'redisvss/redisvss.module.bicep' = {
+  name: 'redisvss'
+  scope: rg
+  params: {
+    location: location
+    principalId: resources.outputs.MANAGED_IDENTITY_PRINCIPAL_ID
+    // principalName: resources.outputs.MANAGED_IDENTITY_NAME
   }
 }
 module sqlserver 'sqlserver/sqlserver.module.bicep' = {
@@ -55,9 +74,13 @@ output MANAGED_IDENTITY_NAME string = resources.outputs.MANAGED_IDENTITY_NAME
 output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = resources.outputs.AZURE_LOG_ANALYTICS_WORKSPACE_NAME
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = resources.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT
 output AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID string = resources.outputs.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID
+output AZURE_CONTAINER_REGISTRY_NAME string = resources.outputs.AZURE_CONTAINER_REGISTRY_NAME
 output AZURE_CONTAINER_APPS_ENVIRONMENT_NAME string = resources.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_NAME
 output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = resources.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_ID
 output AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN string = resources.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN
-output SERVICE_BINDING_KV265DAFE5_ENDPOINT string = resources.outputs.SERVICE_BINDING_KV265DAFE5_ENDPOINT
-output SERVICE_BINDING_KV265DAFE5_NAME string = resources.outputs.SERVICE_BINDING_KV265DAFE5_NAME
+output CACHE_CONNECTIONSTRING string = cache.outputs.connectionString
+output OPENAI_CONNECTIONSTRING string = openai.outputs.connectionString
+output OPENAI_TEXTEMBEDDINGNAME string = openai.outputs.textembeddingname
+output OPENAI_GPTNAME string = openai.outputs.gptname
+output REDISVSS_CONNECTIONSTRING string = redisvss.outputs.connectionString
 output SQLSERVER_SQLSERVERFQDN string = sqlserver.outputs.sqlServerFqdn

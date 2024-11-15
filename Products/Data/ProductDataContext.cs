@@ -34,6 +34,8 @@ public static class DbInitializer
         if (context.Product.Any())
             return;
 
+
+
         var products = new List<Product>
         {
             //1-9

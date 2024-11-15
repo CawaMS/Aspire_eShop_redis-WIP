@@ -3,6 +3,7 @@
 @using Store.Services
 @inject ProductService ProductService
 @inject ICartService CartService
+@inject SimilarItemsService SimilarItemsService
 @inject NavigationManager Nav
 @inject IHttpContextAccessor HttpContextAccessor
 
@@ -49,6 +50,27 @@
             <p><strong>@numInCart</strong> in <a href="cart">shopping bag</a></p>
         </div>
     </div>
+
+    @if (recommendedProducts.Count > 0)
+    {
+        <br/>
+        <br />
+        <br />
+        <h2>Similar products</h2>
+        @foreach (var item in recommendedProducts)
+        {
+            <div class="item-details">
+                <img alt="@item.Name" src="images/@item.ImageUrl" />
+                <div class="description">
+                    <p>@product.Description</p>
+                    <p>
+                        Category: <strong>@product.Category</strong>
+                    </p>
+                </div>
+            </div>
+        }
+    }
+
     
 }
 else if (notFound)
@@ -65,6 +87,7 @@ else if (notFound)
     private bool notFound = false;
     private bool isLoggedIn;
     private int numInCart;
+    private List<Product> recommendedProducts = new List<Product>();
 
     [Parameter]
     public int productId { get; set; }
@@ -80,6 +103,14 @@ else if (notFound)
             isLoggedIn = HttpContext?.User.Identity?.IsAuthenticated == true;
             product = await ProductService.GetProductById(productId);
             await UpdateNumInCartAsync();
+            recommendedProducts = await SimilarItemsService.GetSimilarItems(productId);
+
+            //test
+            // foreach (var item in recommendedProducts)
+            // {
+            //     Console.WriteLine("RecommendedProducts: "+ item.Name);
+            // }
+
         }catch (Exception ex)
         {
             HttpContext!.Response.StatusCode = 404;

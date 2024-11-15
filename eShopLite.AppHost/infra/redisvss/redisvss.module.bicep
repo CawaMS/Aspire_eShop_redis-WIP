@@ -3,13 +3,11 @@ param location string = resourceGroup().location
 
 param principalId string
 
-//param principalName string
-
-resource cache 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' = {
-  name: take('cache-${uniqueString(resourceGroup().id)}', 63)
+resource redisvss 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' = {
+  name: take('redisvss-${uniqueString(resourceGroup().id)}', 63)
   location: location
   tags: {
-    'aspire-resource-name': 'cache'
+    'aspire-resource-name': 'redisvss'
   }
   sku: {
     name: 'Balanced_B5'
@@ -22,13 +20,21 @@ resource cache 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' = {
   }
 }
 
-resource redisEnterpriseDatabase 'Microsoft.Cache/redisEnterprise/databases@2024-09-01-preview' = {
+resource redisvssDatabase 'Microsoft.Cache/redisEnterprise/databases@2024-09-01-preview' = {
   name: 'default'
-  parent: cache
+  parent: redisvss
   properties:{
     clientProtocol: 'Encrypted'
     port: 10000
-    clusteringPolicy: 'OSSCluster'
+    clusteringPolicy: 'EnterpriseCluster'
+    modules: [
+      {
+        name: 'RediSearch'
+      }
+      {
+        name: 'RedisJSON'
+      }
+    ]
     evictionPolicy: 'NoEviction'
     persistence:{
       aofEnabled: false 
@@ -37,10 +43,9 @@ resource redisEnterpriseDatabase 'Microsoft.Cache/redisEnterprise/databases@2024
   }
 }
 
-
 resource redisAccessPolicyAssignmentName 'Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments@2024-09-01-preview' = {
   name: take('cachecontributor${uniqueString(resourceGroup().id)}', 24)
-  parent: redisEnterpriseDatabase
+  parent: redisvssDatabase
   properties: {
     accessPolicyName: 'default'
     user: {
@@ -49,4 +54,4 @@ resource redisAccessPolicyAssignmentName 'Microsoft.Cache/redisEnterprise/databa
     }
   }
 
-output connectionString string = '${cache.properties.hostName}:10000,ssl=true'
+output connectionString string = '${redisvss.properties.hostName}:10000,ssl=true'

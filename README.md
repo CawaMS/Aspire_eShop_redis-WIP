@@ -69,7 +69,6 @@ Code is at [Program.cs line 32](https://github.com/CawaMS/Aspire_eShop_redis-WIP
 ### Entra ID
 
 - The .NET 9 Aspire uses Entra ID for Redis by default. See code at [Products/Program.cs](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/a10d69ab07dcc399cd1c543eb9d075caf2f5e3ad/Products/Program.cs#L19) and [eShopLite.AppHost/Program.cs](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/a10d69ab07dcc399cd1c543eb9d075caf2f5e3ad/eShopLite.AppHost/Program.cs#L10)
-See [cache.module.bicep](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/dotnet9/eShopLite.AppHost/infra/cache/cache.module.bicep) for the generated Bicep file that uses Entra ID by default. 
 
 - The eShop Redis Cache connections are using Entra ID for secure, passwordless auth. Code example at [Program.cs line 35](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/4e956d0be933ace1c6eca03b8afa783b7fddf07e/Store/Program.cs#L35)
 

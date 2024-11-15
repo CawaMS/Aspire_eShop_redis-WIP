@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.Protocol;
 using Products.Data;
@@ -15,7 +16,7 @@ public static class ProductEndpoints
 {
     private static readonly string CacheKeyPostFix = "Product";
 
-    public static void MapProductEndpoints (this IEndpointRouteBuilder routes, IConnectionMultiplexer connectionMultiplexer)
+    public static void MapProductEndpoints (this IEndpointRouteBuilder routes, [FromKeyedServices("cache")]IConnectionMultiplexer connectionMultiplexer, HybridCache hybridCache)
     {
         var group = routes.MapGroup("/api/Product");
         IDatabase RedisDb = connectionMultiplexer.GetDatabase();
@@ -28,41 +29,13 @@ public static class ProductEndpoints
         .WithName("GetAllProducts")
         .Produces<List<Product>>(StatusCodes.Status200OK);
 
-        //group.MapGet("/{id}", async  (int id, ProductDataContext db) =>
-        group.MapGet("/getProductById", async([FromQuery]int id, ProductDataContext db) =>
+        group.MapGet("/getProductById", async ([FromQuery] int id, ProductDataContext db) =>
         {
-            var ProductString = ((await RedisDb.StringGetAsync($"{id}"+$"_{CacheKeyPostFix}")));
-            if (!ProductString.Equals(RedisValue.Null))
-            {
-                string[] product_properties = ProductString.ToString().Split("_&_");
-                // Product _product = JsonSerializer.Deserialize<Product>(ProductString.ToString());
-                Product _product = new Product
-                {
-                    Id = int.Parse(product_properties[0]),
-                    Name = product_properties[1],
-                    Category = product_properties[2],
-                    Description = product_properties[3],
-                    Price = decimal.Parse(product_properties[4]),
-                    ImageUrl = product_properties[5]
-                };
-                return Results.Ok(_product);
-            }
-            else 
-            {
-                Product product = await db.Product.AsNoTracking()
-                               .FirstOrDefaultAsync(model => model.Id == id) is Product model ? model : throw new Exception("item not found");
+            var product = await hybridCache.GetOrCreateAsync($"ProductByIdHC__{id}",
+                        async _ => await db.Product.AsNoTracking()
+                       .FirstOrDefaultAsync(model => model.Id == id));
 
-                string product_properties = product.Id + "_&_" + product.Name + "_&_" + product.Category + "_&_" + product.Description + "_&_" + product.Price + "_&_" + product.ImageUrl;
-                
-                await RedisDb.StringSetAsync($"{id}"+$"_{CacheKeyPostFix}", product_properties);
-                // await RedisDb.StringSetAsync($"{id}"+$"_{CacheKeyPostFix}",JsonSerializer.Serialize(product));
-
-
-
-                return Results.Ok(model);
-            }
-
-
+            return product is not null ? Results.Ok(product) : Results.NotFound();
         })
         .WithName("GetProductById")
         .Produces<Product>(StatusCodes.Status200OK)
