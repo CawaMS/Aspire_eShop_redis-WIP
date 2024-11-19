@@ -80,6 +80,8 @@ The eShop uses Redis to store volatile data like Shopping Cart. Code is at [Cart
 ### Leaderboard
 The eShop uses Redis SortedSet to save leaderboard of top liked items. Click on the "like" button at the product overview page for a few items and multiple times. The *Top Products* page would display the sorted items.
 
+The code for using Redis sortedset to power Leaderboard scenario is at [ProductEndpoints.cs PostVote method](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/99c1f905559a5b66d58db691e66ad69b923f756c/Products/Endpoints/ProductEndpoints.cs#L94) and [ProductEndpoints.cs ProductLeaderboard](https://github.com/CawaMS/Aspire_eShop_redis-WIP/blob/99c1f905559a5b66d58db691e66ad69b923f756c/Products/Endpoints/ProductEndpoints.cs#L104)
+
 The Leaderboard feature can also be demo-ed at scale using the **SimulateLikeProducts** project:
 
 - (Pre-req): Deploy the eShopLite project to Azure
