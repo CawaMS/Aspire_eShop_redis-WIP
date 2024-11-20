@@ -235,9 +235,7 @@ dotnet run
 - After the test is created, it will start the first run
 
 #### Run test with multiple environments
-Repeat the same process for all the environments you want to run. Suggested:
-- Compare **SQL** only environment with **OSS Basic B3** to show that adding Redis makes the response times faster.
-- Compare **OSS Basic B3** to **AMR Balanced B5 without HA**. Scenario is for around 5GB cache for getting started scenarios.
+Repeat the same process for all the environments you want to run.
 
 
 
