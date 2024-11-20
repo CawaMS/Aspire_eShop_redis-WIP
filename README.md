@@ -7,8 +7,7 @@ Thanks to the colleagues who worked on the two reference projects!
 ## Pre-requisites
 - [Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
 - [Visual Studio 2022 Preview](https://visualstudio.microsoft.com/vs/preview/)
-- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-- [.NET 9 preview](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
+- [.NET 9](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
     
 
