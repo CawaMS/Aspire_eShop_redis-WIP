@@ -29,7 +29,7 @@ This sample uses two AMR instances. One B5 OSS Clustering mode for session store
     azd up
     ```
 
-4. Recommending to use 'Australia East', so resources Redis, SQL, and Open AI won't run into quota constains in your internal Azure subscription. 
+4. Recommending to use 'Australia East', so resources like Redis, SQL, and Open AI won't run into quota constrains in your Azure subscriptions. 
 
 ## Running the project in Azure using other Azure Redis service SKUs
 
