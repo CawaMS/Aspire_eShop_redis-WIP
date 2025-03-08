@@ -1,0 +1,49 @@
+﻿@page "/LastViewed"
+@using DataEntities
+@using Store.Services
+@inject ProductService ProductService
+@inject IConfiguration Configuration
+@inject IHttpContextAccessor HttpContextAccessor
+@attribute [StreamRendering(true)]
+
+<PageTitle>Last viewed items</PageTitle>
+
+
+
+<div class="product">
+    <!--<CatalogSearch BrandId="@BrandId" ItemTypeId="@ItemTypeId" />-->
+    @if (lastViewedProduct is null)
+    {
+        <p>No history available. Start shopping by browsing to some products!</p>
+    }
+    else
+    {
+
+            <div class="product-row">
+            <ProductListItem product="@lastViewedProduct" />
+            </div>
+
+
+    }
+</div>
+
+@code {
+    private Product? lastViewedProduct;
+
+    //private int productsPerRow;
+    //private int productCount;
+    //private int rowCount;
+
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        HttpContext = HttpContextAccessor.HttpContext;
+        int? lastViewedProductId = HttpContext.Session.GetInt32("lastViewedProductId");
+        if (lastViewedProductId != null)
+        {
+            lastViewedProduct = await ProductService.GetProductById(lastViewedProductId.Value);
+        }
+    }
+}

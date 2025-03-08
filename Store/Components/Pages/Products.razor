@@ -3,14 +3,11 @@
 @using Store.Services
 @inject ProductService ProductService
 @inject IConfiguration Configuration
+@inject IHttpContextAccessor HttpContextAccessor
 @attribute [StreamRendering(true)]
 @attribute [OutputCache(Duration = 10000)]
 
-<PageTitle>Products</PageTitle>
-
-<h1>Products</h1>
-
-<p>Here are some of our amazing outdoor products that you can purchase.</p>
+<PageTitle>Welcome to the eShop for Outdoor hobbyists! :)</PageTitle>
 
 <div class="product">
     <!--<CatalogSearch BrandId="@BrandId" ItemTypeId="@ItemTypeId" />-->
@@ -30,40 +27,21 @@
                 }
             </div>
         }
-        @*         for (int i = 0; i < products.Count; i += 5)
-        {
-            <div class="product-row">
-                @for (int j = i; j < i + 5 && j < products.Count; j++)
-                {
-                    <ProductListItem product="@products[j]" />
-                }
-            </div>
-        } *@
 
-@*           @foreach (var product in products)
-          {
-
-             <ProductListItem product="@product" />
-
-          } *@
-        
     }
 </div>
 
 @code {
     private List<Product>? products;
+    private int? LastViewedProductId;
+    private Product? LastViewedProduct;
 
-    //private int productsPerRow;
-    //private int productCount;
-    //private int rowCount;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         // Simulate asynchronous loading to demonstrate streaming rendering
         products = await ProductService.GetProducts();
-        //productsPerRow = 3;
-        //productCount = products.Count;
-        //rowCount = (int)Math.Ceiling((double)productCount / productsPerRow);
     }
-
 }

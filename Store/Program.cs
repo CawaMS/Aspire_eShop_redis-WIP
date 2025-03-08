@@ -47,6 +47,20 @@ builder.AddRedisOutputCache("cache", configureOptions: options =>
     options.Defaults = configurationOptions.Defaults;
 });
 
+//Add session
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromDays(14);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+builder.AddRedisDistributedCache("cache", configureOptions: options =>
+{
+    options.Defaults = configurationOptions.Defaults;
+});
+
 var configurationOptionsRedisVss = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("redisvss") ?? throw new InvalidOperationException("Could not find a 'redisvss' connection string."));
 await configurationOptionsRedisVss.ConfigureForAzureWithTokenCredentialAsync(new DefaultAzureCredential());
 
@@ -110,6 +124,8 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.UseOutputCache();
+
+ app.UseSession();
 
 app.UseAuthorization();
 

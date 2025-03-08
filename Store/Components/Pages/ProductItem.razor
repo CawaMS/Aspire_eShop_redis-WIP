@@ -104,6 +104,7 @@ else if (notFound)
             product = await ProductService.GetProductById(productId);
             await UpdateNumInCartAsync();
             recommendedProducts = await SimilarItemsService.GetSimilarItems(productId);
+            HttpContext?.Session.SetInt32("lastViewedProductId", productId);
 
             //test
             // foreach (var item in recommendedProducts)
