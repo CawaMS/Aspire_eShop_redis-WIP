@@ -24,7 +24,17 @@ builder.AddKeyedRedisClient(name:"cache", configureOptions: options =>
 });
 
 #pragma warning disable EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-builder.Services.AddHybridCache();
+builder.Services.AddHybridCache(
+   options =>
+   {
+       // options.MaximumPayloadBytes = 1024 * 1024;
+       // options.MaximumKeyLength = 1024;
+       options.DefaultEntryOptions = new HybridCacheEntryOptions
+       {
+           Expiration = TimeSpan.FromMinutes(120),
+           LocalCacheExpiration = TimeSpan.FromMinutes(120)
+       };
+   });
 #pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 builder.Services.AddStackExchangeRedisCache(options =>
 {
